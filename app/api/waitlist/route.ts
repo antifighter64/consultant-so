@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY)
       await resend.emails.send({
-        from: 'Linkbaits.com <hello@linkbaits.com>',
+        from: 'Consultant.so <hello@consultant.so>',
         to: email,
         subject: "You're on the Linkbaits waitlist 🔗",
         html: `

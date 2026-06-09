@@ -1,82 +1,28 @@
 'use client'
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+const specialties = ['Business Strategy','Fractional CFO','Marketing','Legal','Technology','HR & People','Operations','Sales','Finance','Executive Coaching']
+
 const features = [
-  {
-    icon: '🎯',
-    title: 'Linkbait Scanner',
-    desc: 'Paste any URL — get an AI score from 1–10 with a full breakdown of why it does or doesn\'t earn links.',
-    badge: 'Free tier: 3/mo',
-  },
-  {
-    icon: '💡',
-    title: 'Idea Generator',
-    desc: 'Enter your niche and competitors. Get 10 custom linkbait ideas ranked by link potential.',
-    badge: 'Pro+',
-  },
-  {
-    icon: '🕵️',
-    title: 'Competitor Link Spy',
-    desc: 'See exactly which pages on any competitor domain are earning the most backlinks — and replicate them.',
-    badge: 'Pro+',
-  },
-  {
-    icon: '🤖',
-    title: 'FreeLinks Automation',
-    desc: 'Auto-submit your best assets to 30+ free directories, aggregators, and resource pages with one click.',
-    badge: 'Growth+',
-  },
-  {
-    icon: '📡',
-    title: 'AEO + GEO Tracker',
-    desc: 'Track where you appear in AI answers (ChatGPT, Perplexity, Google AI) and map your geo visibility.',
-    badge: 'Growth+',
-  },
-  {
-    icon: '📊',
-    title: 'GSC Integration',
-    desc: 'Connect Google Search Console → fix titles, descriptions, internal links, and long-tail gaps automatically.',
-    badge: 'Pro+',
-  },
+  { icon: '🔍', title: 'Find the right fit', desc: 'Filter by specialty, location, rate, and availability. Every consultant is vetted before listing.' },
+  { icon: '📅', title: 'Book instantly', desc: 'See real availability and book discovery calls directly from the profile — no back-and-forth.' },
+  { icon: '✅', title: 'Verified credentials', desc: 'Verified badges for consultants who pass our vetting process. Know who you\'re hiring.' },
+  { icon: '💼', title: 'All specialties', desc: 'Business, legal, finance, marketing, tech, HR, operations — every type of consultant in one place.' },
+  { icon: '⭐', title: 'Rated & reviewed', desc: 'Real reviews from real clients. See track record before you commit.' },
+  { icon: '🤝', title: 'Fractional execs', desc: 'Hire a fractional CFO, CMO, or CTO. Enterprise talent at startup-friendly rates.' },
 ]
 
 const pricing = [
-  {
-    name: 'Pro',
-    price: '$99',
-    period: '/mo',
-    highlight: false,
-    features: ['Linkbait Scanner (unlimited)', 'Idea Generator', 'Competitor Spy (5 domains)', 'GSC Integration', 'Asset Database', '7-day free trial'],
-  },
-  {
-    name: 'Growth',
-    price: '$199',
-    period: '/mo',
-    highlight: true,
-    badge: 'Most Popular',
-    features: ['Everything in Pro', 'AEO + GEO Tracker', 'FreeLinks Automation (30+ dirs)', 'Social Auto-Post Queue', 'Headline Engine', 'Embed Code Generator'],
-  },
-  {
-    name: 'Agency',
-    price: '$499',
-    period: '/mo',
-    highlight: false,
-    features: ['Everything in Growth', 'White-label PDF Reports', 'API Access', '10 Client Seats', 'Monthly Strategy Call', 'Custom Linkbait Queue'],
-  },
-]
-
-const stats = [
-  { value: '10M+', label: 'Links analyzed' },
-  { value: '50K+', label: 'Ideas generated' },
-  { value: '30+', label: 'Auto-submit directories' },
-  { value: '4.9★', label: 'Beta rating' },
+  { name: 'Free', price: '$0', desc: 'Basic profile, no leads', features: ['Public profile listing', 'Specialty + location tags', 'Contact button (email only)', 'Community access'], cta: 'Get Listed Free' },
+  { name: 'Pro', price: '$49', period: '/mo', highlight: true, badge: 'Most Popular', desc: 'For active consultants', features: ['Everything in Free', 'Receive inbound lead emails', 'Full profile with photo & bio', '1 featured placement/month', 'Analytics dashboard', '7-day free trial'], cta: 'Start Free Trial' },
+  { name: 'Premium', price: '$149', period: '/mo', desc: 'For top consultants', features: ['Everything in Pro', 'Priority placement in search', 'Verified Consultant badge', 'Booking calendar integration', 'Unlimited leads', 'Consulting firm/team accounts'], cta: 'Get Premium' },
 ]
 
 export default function Home() {
   const router = useRouter()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', website: '' })
+  const [tab, setTab] = useState<'business'|'consultant'>('business')
+  const [form, setForm] = useState({ name: '', email: '', phone: '', type: 'business', specialty: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -88,7 +34,7 @@ export default function Home() {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, type: tab }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong')
@@ -101,156 +47,102 @@ export default function Home() {
   }
 
   return (
-    <main className="bg-white text-gray-900">
+    <main style={{ background: '#09090b', color: '#fafafa', minHeight: '100vh' }}>
 
       {/* Nav */}
-      <nav className="border-b border-gray-100 px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
-        <span className="text-xl font-black tracking-tight">
-          Linkbaits<span className="text-indigo-600">.com</span>
+      <nav style={{ borderBottom: '1px solid #27272a', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1100px', margin: '0 auto' }}>
+        <span style={{ fontSize: '1.2rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
+          Consultant<span style={{ color: '#6366f1' }}>.so</span>
         </span>
-        <a
-          href="#waitlist"
-          className="bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
-        >
-          Join Waitlist
-        </a>
+        <a href="#waitlist" style={{ background: '#6366f1', color: '#fff', padding: '0.5rem 1.1rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>Join Waitlist</a>
       </nav>
 
       {/* Hero */}
-      <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
-        <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
-          <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
-          Now accepting waitlist signups
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '5rem 1.5rem 4rem', textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#1c1c1e', border: '1px solid #3f3f46', borderRadius: '999px', padding: '6px 14px', fontSize: '12px', color: '#a1a1aa', marginBottom: '2rem', letterSpacing: '0.5px' }}>
+          <span style={{ width: '7px', height: '7px', background: '#22c55e', borderRadius: '50%', display: 'inline-block', animation: 'pulse 2s infinite' }}></span>
+          NOW ACCEPTING WAITLIST
         </div>
-        <h1 className="text-5xl md:text-6xl font-black tracking-tight leading-tight mb-6">
-          The Linkbait Platform<br />
-          <span className="text-indigo-600">That Gets You Cited</span>
+        <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 5rem)', fontWeight: 900, lineHeight: 1.05, letterSpacing: '-2px', marginBottom: '1.5rem' }}>
+          Find a great consultant<br />
+          <span style={{ color: '#6366f1' }}>in minutes, not weeks</span>
         </h1>
-        <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-          AI tools to create, score, and automate content people link to.
-          Beat Semrush and Ahrefs at the one thing they can&apos;t do — <strong className="text-gray-700">build your linkbait for you</strong>.
+        <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', color: '#a1a1aa', maxWidth: '600px', margin: '0 auto 2.5rem', lineHeight: 1.7 }}>
+          The marketplace where businesses find vetted consultants — and consultants get steady clients. Every specialty, every industry.
         </p>
 
-        {/* Stats bar */}
-        <div className="flex flex-wrap justify-center gap-8 mb-12">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-2xl font-black text-indigo-600">{s.value}</div>
-              <div className="text-xs text-gray-400 mt-0.5">{s.label}</div>
+        {/* Stats */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5rem', flexWrap: 'wrap', marginBottom: '3rem' }}>
+          {[['500+', 'Consultants joining'], ['50+', 'Specialties covered'], ['$49/mo', 'Pro listing price'], ['Free', 'For businesses']].map(([v, l]) => (
+            <div key={l} style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#6366f1' }}>{v}</div>
+              <div style={{ fontSize: '0.75rem', color: '#71717a', marginTop: '2px' }}>{l}</div>
             </div>
           ))}
         </div>
 
-        {/* CTA scroll */}
-        <a
-          href="#waitlist"
-          className="inline-flex items-center gap-2 bg-indigo-600 text-white font-bold text-lg px-8 py-4 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
-        >
-          Get Early Access — Free
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+        <a href="#waitlist" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#6366f1', color: '#fff', padding: '1rem 2rem', borderRadius: '12px', fontWeight: 700, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 40px rgba(99,102,241,0.3)' }}>
+          Get Early Access →
         </a>
-        <p className="text-xs text-gray-400 mt-3">No credit card required for waitlist · Early members get 20% off</p>
+        <p style={{ fontSize: '0.75rem', color: '#52525b', marginTop: '0.75rem' }}>Free for businesses · Consultants get 30 days free</p>
+      </section>
+
+      {/* Specialty pills */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 1.5rem 4rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+          {specialties.map(s => (
+            <span key={s} style={{ background: '#18181b', border: '1px solid #27272a', borderRadius: '999px', padding: '6px 16px', fontSize: '0.8rem', color: '#a1a1aa' }}>{s}</span>
+          ))}
+        </div>
       </section>
 
       {/* Features */}
-      <section className="bg-gray-50 py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-3">What&apos;s inside</p>
-            <h2 className="text-3xl font-black">Everything Semrush can&apos;t do</h2>
-            <p className="text-gray-500 mt-3 max-w-xl mx-auto">
-              Semrush tracks links. Ahrefs analyzes links. Linkbaits.com <em>creates</em> them.
-            </p>
+      <section style={{ background: '#0f0f10', borderTop: '1px solid #18181b', borderBottom: '1px solid #18181b', padding: '5rem 1.5rem' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <p style={{ fontSize: '11px', letterSpacing: '3px', color: '#6366f1', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Why Consultant.so</p>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, letterSpacing: '-1px' }}>Everything you need to hire or get hired</h2>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((f) => (
-              <div key={f.title} className="bg-white rounded-xl p-6 border border-gray-100 hover:border-indigo-200 hover:shadow-sm transition-all">
-                <div className="text-2xl mb-3">{f.icon}</div>
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="font-bold text-gray-900">{f.title}</h3>
-                  <span className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">{f.badge}</span>
-                </div>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5px', background: '#27272a' }}>
+            {features.map(f => (
+              <div key={f.title} style={{ background: '#09090b', padding: '2rem', transition: 'background 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#111113')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#09090b')}>
+                <div style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>{f.icon}</div>
+                <h3 style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '1rem' }}>{f.title}</h3>
+                <p style={{ color: '#71717a', fontSize: '0.88rem', lineHeight: 1.7 }}>{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-20 px-6 max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-3">The workflow</p>
-          <h2 className="text-3xl font-black">From zero links to link magnet in 4 steps</h2>
-        </div>
-        <div className="grid md:grid-cols-4 gap-6">
-          {[
-            { step: '01', title: 'Scan', desc: 'Score your existing content. Find what\'s linkable and what\'s not.' },
-            { step: '02', title: 'Create', desc: 'AI generates 10 custom linkbait ideas ranked by potential.' },
-            { step: '03', title: 'Publish', desc: 'Build the asset — stats page, tool, infographic, or article.' },
-            { step: '04', title: 'Automate', desc: 'FreeLinks submits it to 30+ directories. Social queue blasts it out.' },
-          ].map((s) => (
-            <div key={s.step} className="text-center">
-              <div className="text-4xl font-black text-indigo-100 mb-2">{s.step}</div>
-              <h3 className="font-bold text-gray-900 mb-1">{s.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Pricing preview */}
-      <section className="bg-gray-50 py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-3">Pricing</p>
-            <h2 className="text-3xl font-black">Simple, transparent pricing</h2>
-            <p className="text-gray-500 mt-3">All plans include a 7-day free trial. Early waitlist members get 20% off for life.</p>
+      {/* Pricing */}
+      <section style={{ padding: '5rem 1.5rem' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <p style={{ fontSize: '11px', letterSpacing: '3px', color: '#6366f1', textTransform: 'uppercase', marginBottom: '0.75rem' }}>For Consultants</p>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, letterSpacing: '-1px' }}>Simple pricing, serious results</h2>
+            <p style={{ color: '#71717a', marginTop: '0.75rem' }}>Waitlist members lock in 20% off forever.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {pricing.map((p) => (
-              <div
-                key={p.name}
-                className={`relative rounded-xl p-6 border ${
-                  p.highlight
-                    ? 'border-indigo-500 bg-indigo-600 text-white shadow-xl shadow-indigo-200'
-                    : 'border-gray-200 bg-white'
-                }`}
-              >
-                {p.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">
-                    {p.badge}
-                  </div>
-                )}
-                <div className="mb-4">
-                  <p className={`text-sm font-semibold mb-1 ${p.highlight ? 'text-indigo-200' : 'text-gray-500'}`}>{p.name}</p>
-                  <div className="flex items-baseline gap-0.5">
-                    <span className="text-4xl font-black">{p.price}</span>
-                    <span className={`text-sm ${p.highlight ? 'text-indigo-200' : 'text-gray-400'}`}>{p.period}</span>
-                  </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2px', background: '#27272a' }}>
+            {pricing.map(p => (
+              <div key={p.name} style={{ position: 'relative', background: p.highlight ? '#6366f1' : '#09090b', padding: '2rem', color: p.highlight ? '#fff' : '#fafafa' }}>
+                {p.badge && <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: '#f59e0b', color: '#000', fontSize: '11px', fontWeight: 700, padding: '3px 12px', borderRadius: '999px', whiteSpace: 'nowrap' }}>{p.badge}</div>}
+                <p style={{ fontSize: '0.8rem', color: p.highlight ? 'rgba(255,255,255,0.7)' : '#71717a', marginBottom: '0.5rem' }}>{p.name}</p>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px', marginBottom: '0.25rem' }}>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 900 }}>{p.price}</span>
+                  {p.period && <span style={{ fontSize: '0.85rem', color: p.highlight ? 'rgba(255,255,255,0.6)' : '#71717a' }}>{p.period}</span>}
                 </div>
-                <ul className="space-y-2.5 mb-6">
-                  {p.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm">
-                      <svg className={`w-4 h-4 shrink-0 ${p.highlight ? 'text-indigo-200' : 'text-indigo-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className={p.highlight ? 'text-indigo-100' : 'text-gray-600'}>{f}</span>
+                <p style={{ fontSize: '0.8rem', color: p.highlight ? 'rgba(255,255,255,0.6)' : '#71717a', marginBottom: '1.5rem' }}>{p.desc}</p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {p.features.map(f => (
+                    <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: p.highlight ? 'rgba(255,255,255,0.85)' : '#a1a1aa' }}>
+                      <span style={{ color: p.highlight ? 'rgba(255,255,255,0.7)' : '#6366f1' }}>✓</span> {f}
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="#waitlist"
-                  className={`block text-center text-sm font-bold py-2.5 rounded-lg transition-colors ${
-                    p.highlight
-                      ? 'bg-white text-indigo-600 hover:bg-indigo-50'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
-                  }`}
-                >
-                  Join Waitlist
-                </a>
+                <a href="#waitlist" style={{ display: 'block', textAlign: 'center', padding: '0.75rem', borderRadius: '8px', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none', background: p.highlight ? '#fff' : '#18181b', color: p.highlight ? '#6366f1' : '#fafafa', border: p.highlight ? 'none' : '1px solid #27272a' }}>{p.cta}</a>
               </div>
             ))}
           </div>
@@ -258,92 +150,60 @@ export default function Home() {
       </section>
 
       {/* Waitlist form */}
-      <section id="waitlist" className="py-24 px-6">
-        <div className="max-w-lg mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-3">Early access</p>
-            <h2 className="text-4xl font-black mb-3">Secure your spot</h2>
-            <p className="text-gray-500">Join the waitlist. Be first in. Lock in 20% off for life.</p>
+      <section id="waitlist" style={{ background: '#0f0f10', borderTop: '1px solid #18181b', padding: '5rem 1.5rem' }}>
+        <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <p style={{ fontSize: '11px', letterSpacing: '3px', color: '#6366f1', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Early Access</p>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, letterSpacing: '-1px', marginBottom: '0.75rem' }}>Secure your spot</h2>
+            <p style={{ color: '#71717a' }}>Be first in. Lock in 20% off for life.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Full name <span className="text-red-400">*</span></label>
-              <input
-                type="text"
-                required
-                placeholder="Boris Kreiman"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Work email <span className="text-red-400">*</span></label>
-              <input
-                type="email"
-                required
-                placeholder="you@company.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Phone number <span className="text-red-400">*</span>
-                <span className="text-xs text-gray-400 font-normal ml-1">(for onboarding call)</span>
-              </label>
-              <input
-                type="tel"
-                required
-                placeholder="+1 (917) 000-0000"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Website <span className="text-gray-400 font-normal text-xs">(optional — we&apos;ll pre-scan it)</span>
-              </label>
-              <input
-                type="url"
-                placeholder="https://yoursite.com"
-                value={form.website}
-                onChange={(e) => setForm({ ...form, website: e.target.value })}
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
-            </div>
+          {/* Tab */}
+          <div style={{ display: 'flex', background: '#18181b', borderRadius: '10px', padding: '4px', marginBottom: '1.5rem' }}>
+            {(['business', 'consultant'] as const).map(t => (
+              <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: '0.6rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', background: tab === t ? '#6366f1' : 'transparent', color: tab === t ? '#fff' : '#71717a', transition: 'all 0.15s' }}>
+                {t === 'business' ? '🏢 I need a consultant' : '💼 I am a consultant'}
+              </button>
+            ))}
+          </div>
 
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700">
-                {error}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {[{ label: 'Full name', key: 'name', type: 'text', placeholder: 'Your name' }, { label: 'Email', key: 'email', type: 'email', placeholder: 'you@company.com' }, { label: 'Phone', key: 'phone', type: 'tel', placeholder: '+1 (555) 000-0000' }].map(f => (
+              <div key={f.key}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: '#a1a1aa', marginBottom: '6px' }}>{f.label} <span style={{ color: '#ef4444' }}>*</span></label>
+                <input type={f.type} required placeholder={f.placeholder} value={(form as Record<string, string>)[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })}
+                  style={{ width: '100%', background: '#18181b', border: '1px solid #27272a', borderRadius: '8px', padding: '0.75rem 1rem', color: '#fafafa', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }} />
+              </div>
+            ))}
+
+            {tab === 'consultant' && (
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 500, color: '#a1a1aa', marginBottom: '6px' }}>Primary specialty</label>
+                <select value={form.specialty} onChange={e => setForm({ ...form, specialty: e.target.value })}
+                  style={{ width: '100%', background: '#18181b', border: '1px solid #27272a', borderRadius: '8px', padding: '0.75rem 1rem', color: form.specialty ? '#fafafa' : '#52525b', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}>
+                  <option value="">Select your specialty</option>
+                  {specialties.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed text-base shadow-lg shadow-indigo-200"
-            >
-              {loading ? 'Joining...' : 'Join the Waitlist — Free →'}
+            {error && <div style={{ background: '#1c0a0a', border: '1px solid #7f1d1d', borderRadius: '8px', padding: '0.75rem 1rem', fontSize: '0.85rem', color: '#fca5a5' }}>{error}</div>}
+
+            <button type="submit" disabled={loading} style={{ background: '#6366f1', color: '#fff', border: 'none', borderRadius: '10px', padding: '1rem', fontWeight: 700, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1, marginTop: '0.25rem', boxShadow: '0 0 30px rgba(99,102,241,0.25)' }}>
+              {loading ? 'Joining...' : tab === 'business' ? 'Get Early Access — Free →' : 'Join as a Consultant →'}
             </button>
-            <p className="text-xs text-center text-gray-400">
-              No credit card · No spam · Unsubscribe anytime
-            </p>
+            <p style={{ textAlign: 'center', fontSize: '0.72rem', color: '#52525b' }}>No credit card · No spam · Unsubscribe anytime</p>
           </form>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 px-6 py-8 text-center">
-        <p className="text-sm font-black tracking-tight mb-2">
-          Linkbaits<span className="text-indigo-600">.com</span>
-        </p>
-        <p className="text-xs text-gray-400">© 2026 Linkbaits.com · The Linkbait Platform That Gets You Cited</p>
+      <footer style={{ borderTop: '1px solid #18181b', padding: '2rem 1.5rem', textAlign: 'center' }}>
+        <p style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '0.5rem' }}>Consultant<span style={{ color: '#6366f1' }}>.so</span></p>
+        <p style={{ fontSize: '0.72rem', color: '#3f3f46' }}>© 2026 Consultant.so · The Consulting Marketplace</p>
       </footer>
 
+      <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
     </main>
   )
 }

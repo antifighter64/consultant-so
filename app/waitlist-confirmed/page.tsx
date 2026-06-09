@@ -1,35 +1,20 @@
 import Link from 'next/link'
-
 export default function WaitlistConfirmed() {
   return (
-    <main className="min-h-screen bg-white flex items-center justify-center px-4">
-      <div className="max-w-md w-full text-center">
-        <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">You&apos;re on the list!</h1>
-        <p className="text-gray-500 text-lg mb-8">
-          Check your inbox — we sent a confirmation. You&apos;ll be first to know when Linkbaits.com launches.
-        </p>
-        <div className="bg-indigo-50 rounded-xl p-6 mb-8 text-left">
-          <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-3">While you wait</p>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li className="flex items-center gap-2">
-              <span className="text-indigo-500">→</span> Share with an SEO friend and move up the list
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-indigo-500">→</span> Early members get 20% off at launch
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-indigo-500">→</span> Beta testers get free Agency access for 30 days
-            </li>
+    <main style={{ minHeight: '100vh', background: '#09090b', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', fontFamily: 'Inter, system-ui, sans-serif' }}>
+      <div style={{ maxWidth: '420px', textAlign: 'center', color: '#fafafa' }}>
+        <div style={{ width: '56px', height: '56px', background: '#1c1c1e', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '1.5rem' }}>✓</div>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.75rem', letterSpacing: '-1px' }}>You&apos;re on the list!</h1>
+        <p style={{ color: '#71717a', marginBottom: '2rem', lineHeight: 1.7 }}>Check your inbox for confirmation. You&apos;ll be first to know when Consultant.so launches — with 20% off locked in.</p>
+        <div style={{ background: '#0f0f10', border: '1px solid #27272a', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem', textAlign: 'left' }}>
+          <p style={{ fontSize: '11px', letterSpacing: '2px', color: '#6366f1', textTransform: 'uppercase', marginBottom: '0.75rem' }}>What&apos;s coming</p>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {['Vetted consultant profiles across 50+ specialties', 'Instant booking & calendar integration', 'Verified badge system', 'AI-powered matching: describe your problem → get matched'].map(i => (
+              <li key={i} style={{ display: 'flex', gap: '8px', fontSize: '0.85rem', color: '#a1a1aa' }}><span style={{ color: '#6366f1', flexShrink: 0 }}>→</span>{i}</li>
+            ))}
           </ul>
         </div>
-        <Link href="/" className="text-indigo-600 text-sm hover:underline">
-          ← Back to home
-        </Link>
+        <Link href="/" style={{ color: '#6366f1', fontSize: '0.85rem', textDecoration: 'none' }}>← Back to home</Link>
       </div>
     </main>
   )
